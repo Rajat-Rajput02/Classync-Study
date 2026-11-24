@@ -258,34 +258,57 @@ function StudentDashboard() {
               const response = progressByGroup[groupId];
 
               // Supports either a direct response or a nested progress object.
-              const progress =
-                response?.progress ??
-                response?.data?.progress ??
-                response?.data ??
-                response ??
-                {};
+              const progressRows = Array.isArray(response?.progress)
+                ? response.progress
+                : Array.isArray(response?.data?.progress)
+                  ? response.data.progress
+                  : [];
 
-              const confirmed = Number(
-                progress.confirmedMembers ??
-                  progress.confirmed_members ??
-                  progress.confirmed_count ??
-                  progress.confirmed ??
-                  progress.completed ??
-                  0,
+              const confirmed = progressRows.reduce(
+                (sum, item) =>
+                  sum +
+                  Number(item.confirmed_members ?? item.confirmed_count ?? 0),
+                0,
               );
 
-              const total = Number(
-                progress.totalMembers ??
-                  progress.total_members ??
-                  progress.total_count ??
-                  progress.total ??
-                  0,
+              const total = progressRows.reduce(
+                (sum, item) => sum + Number(item.total_members ?? 0),
+                0,
               );
 
               const percentage =
                 total > 0
                   ? Math.min(100, Math.round((confirmed / total) * 100))
                   : 0;
+
+              // const progress =
+              //   response?.progress ??
+              //   response?.data?.progress ??
+              //   response?.data ??
+              //   response ??
+              //   {};
+
+              // const confirmed = Number(
+              //   progress.confirmedMembers ??
+              //     progress.confirmed_members ??
+              //     progress.confirmed_count ??
+              //     progress.confirmed ??
+              //     progress.completed ??
+              //     0,
+              // );
+
+              // const total = Number(
+              //   progress.totalMembers ??
+              //     progress.total_members ??
+              //     progress.total_count ??
+              //     progress.total ??
+              //     0,
+              // );
+
+              // const percentage =
+              //   total > 0
+              //     ? Math.min(100, Math.round((confirmed / total) * 100))
+              //     : 0;
 
               return (
                 <div

@@ -16,8 +16,9 @@ const getAssignments = async (req, res) => {
           a.created_at,
           g.id AS group_id,
           g.group_name,
-          COALESCE(s.is_confirmed, FALSE) AS is_confirmed,
-          s.confirmed_at
+         COALESCE(s.is_confirmed, FALSE) AS is_confirmed,
+         COALESCE(s.is_confirmed, FALSE) AS is_submitted,
+         s.confirmed_at
        FROM assignments a
 
        JOIN group_members gm

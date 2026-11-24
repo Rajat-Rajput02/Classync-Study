@@ -511,9 +511,13 @@ const getAnalytics = async (req, res) => {
 
        SELECT
           COUNT(*)::INTEGER AS total_students,
-          COUNT(*) FILTER (
-              WHERE s.is_confirmed = TRUE
-          )::INTEGER AS confirmed_submissions,
+        COUNT(*) FILTER (
+    WHERE s.is_confirmed = TRUE
+)::INTEGER AS confirmed_submissions,
+
+COUNT(*) FILTER (
+    WHERE s.is_confirmed = TRUE
+)::INTEGER AS total_submissions,
 
           COUNT(*) FILTER (
               WHERE COALESCE(s.is_confirmed, FALSE) = FALSE
@@ -553,21 +557,25 @@ const getAnalytics = async (req, res) => {
   }
 };
 // getAll groups
+// GET ALL GROUPS FOR ADMIN
 const getAllGroups = async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT id, name
+      SELECT
+        id,
+        group_name AS name
       FROM groups
-      ORDER BY name ASC
+      ORDER BY group_name ASC
     `);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       groups: result.rows,
     });
   } catch (error) {
     console.error("Get groups error:", error);
-    res.status(500).json({
+
+    return res.status(500).json({
       success: false,
       message: "Failed to fetch groups",
     });
