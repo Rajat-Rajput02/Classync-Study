@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: classync-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: classync_user
+      POSTGRES_PASSWORD: classync_dev_password
+      POSTGRES_DB: classync_db
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U classync_user -d classync_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
